@@ -131,6 +131,7 @@ bool Project13AudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts
 
 void Project13AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
+    
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
@@ -143,6 +144,54 @@ void Project13AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
     // this code if your algorithm always overwrites all the output channels.
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
+    
+    // Temp instance to pull into
+    auto newDSPOrder = DSP_Order();
+    
+    // Try to pull
+    while (dspOrderFifo.pull(newDSPOrder))
+    {
+        // If you pulled, replace dspOrder
+        if(newDSPOrder != DSP_Order())
+            dspOrder = newDSPOrder;
+    }
+    
+    // Now convert dspOrder into an array of pointers
+    DSP_Pointers dspPointers;
+    
+    for(size_t i = 0; i < dspPointers.size(); i++)
+    {
+        switch (dspOrder[i])
+        {
+            case DSP_Option::Phase:
+                dspPointers[i] = &phaser;
+                break;
+            case DSP_Option::Chorus:
+                dspPointers[i] = &chorus;
+                break;
+            case DSP_Option::OverDrive:
+                dspPointers[i] = &overdrive;
+                break;
+            case DSP_Option::LadderFilter:
+                dspPointers[i] = &ladderFilter;
+                break;
+            case DSP_Option::END_OF_LIST:
+                jassertfalse;
+                break;
+        }
+    }
+    
+    //now process
+    auto block = juce::dsp::AudioBlock<float>(buffer);
+    auto context = juce::dsp::ProcessContextReplacing<float>(block);
+    
+    for(size_t i = 0; i < dspPointers.size(); i++)
+    {
+        if(dspPointers[i] != nullptr)
+        {
+            dspPointers[i]->process(context);
+        }
+    }
 
 }
 
