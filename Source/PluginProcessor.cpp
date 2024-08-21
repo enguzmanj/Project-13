@@ -464,7 +464,7 @@ static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout
                (juce::ParameterID{name, versionHint},
                 name,
                 juce::NormalisableRange<float>(-24.f, 24.f, 0.5f, 1.f),
-                0.0f, "Db"));
+                0.0f, ""));
     
     return layout;
 }
@@ -539,7 +539,7 @@ void Project13AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
     //[DONE]: add APVTS
     //[DONE]: create audio parameters for all dsp choices
     //TODO: update DSP here from audio parameters
-    //TODO: save/load settings
+    //[DONE]: save/load settings
     //TODO: save/load DSP order
     //TODO: Drag-To-Reorder GUI
     //TODO: GUI design for each DSP instance?
@@ -563,7 +563,8 @@ bool Project13AudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor* Project13AudioProcessor::createEditor()
 {
-    return new Project13AudioProcessorEditor (*this);
+//    return new Project13AudioProcessorEditor (*this);
+    return new juce::GenericAudioProcessorEditor(*this);
 }
 
 //==============================================================================
@@ -572,12 +573,21 @@ void Project13AudioProcessor::getStateInformation (juce::MemoryBlock& destData)
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
+    
+    juce::MemoryOutputStream mos(destData, false);
+    apvts.state.writeToStream(mos);
 }
 
 void Project13AudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
+    
+    auto tree = juce::ValueTree::readFromData(data, sizeInBytes);
+    if (tree.isValid())
+    {
+        apvts.replaceState(tree);
+    }
 }
 
 //==============================================================================
