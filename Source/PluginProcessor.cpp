@@ -287,7 +287,8 @@ bool Project13AudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts
 #endif
 
 
-static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
+juce::AudioProcessorValueTreeState::ParameterLayout 
+Project13AudioProcessor::createParameterLayout()
 {
     juce::AudioProcessorValueTreeState::ParameterLayout layout;
     
