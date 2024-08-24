@@ -421,8 +421,8 @@ Project13AudioProcessor::createParameterLayout()
     layout.add(std::make_unique<juce::AudioParameterFloat>
                (juce::ParameterID {name, versionHint},
                 name,
-                juce::NormalisableRange<float>(0.f, 1.f, 0.01f, 1.f),
-                0.f, "%"));
+                juce::NormalisableRange<float>(0.1f, 1.f, 0.01f, 1.f),
+                0.1f, "%"));
     
     name = getLadderFilterDriveName();
     layout.add(std::make_unique<juce::AudioParameterFloat>
@@ -486,6 +486,44 @@ void Project13AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
     
+    //[DONE]: add APVTS
+    //[DONE]: create audio parameters for all dsp choices
+    //[DONE]: update DSP here from audio parameters
+       //TODO: update generalFilter coefficients
+       //TODO: add smoothers for all param updates
+    //[DONE]: save/load settings
+    //TODO: save/load DSP order
+    //TODO: Drag-To-Reorder GUI
+    //TODO: GUI design for each DSP instance?
+    //TODO: metering
+    //[DONE]: prepare all DSP
+    //TODO: wet/dry knob [BONUS] (can be controlled with setMix parameter of dsp effect classes)
+    //TODO: mono & stereo versions [mono is BONUS]
+    //TODO: modulators [BONUS]
+    //TODO: thread-safe filter updating [BONUS]
+    //TODO: pre/post filtering [BONUS]
+    //TODO: delay module [BONUS]
+    //TODO: negative feedback parameter [NICO]
+    
+    phaser.dsp.setRate( phaserRateHz->get() );
+    phaser.dsp.setCentreFrequency( phaserCenterFreqHz->get() );
+    phaser.dsp.setDepth( phaserDepthPercent->get() );
+    phaser.dsp.setFeedback( phaserFeedbackPercent->get() );
+    phaser.dsp.setMix( phaserMixPercent->get() );
+    
+    chorus.dsp.setRate( chorusRateHz->get() );
+    chorus.dsp.setDepth( chorusDepthPercent->get() );
+    chorus.dsp.setCentreDelay( chorusCenterDelayMs->get() );
+    chorus.dsp.setFeedback( chorusFeedbackPercent->get() );
+    chorus.dsp.setMix( chorusMixPercent->get() );
+    
+    overdrive.dsp.setDrive( overdriveSaturation->get() );
+    
+    ladderFilter.dsp.setMode( static_cast<juce::dsp::LadderFilterMode>(ladderFilterMode->getIndex()));
+    ladderFilter.dsp.setCutoffFrequencyHz( ladderFilterCutoffHz->get() );
+    ladderFilter.dsp.setResonance( ladderFilterResonance->get() );
+    ladderFilter.dsp.setDrive( ladderFilterDrive->get() );
+    
     // Temp instance to pull into
     auto newDSPOrder = DSP_Order();
     
@@ -536,24 +574,7 @@ void Project13AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
             dspPointers[i]->process(context);
         }
     }
-    
-    //[DONE]: add APVTS
-    //[DONE]: create audio parameters for all dsp choices
-    //TODO: update DSP here from audio parameters
-    //[DONE]: save/load settings
-    //TODO: save/load DSP order
-    //TODO: Drag-To-Reorder GUI
-    //TODO: GUI design for each DSP instance?
-    //TODO: metering
-    //[DONE]: prepare all DSP
-    //TODO: wet/dry knob [BONUS] (can be controlled with setMix parameter of dsp effect classes)
-    //TODO: mono & stereo versions [mono is BONUS]
-    //TODO: modulators [BONUS]
-    //TODO: thread-safe filter updating [BONUS]
-    //TODO: pre/post filtering [BONUS]
-    //TODO: delay module [BONUS]
-    //TODO: negative feedback parameter [NICO]
-    
+
 }
 
 //==============================================================================
