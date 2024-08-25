@@ -80,24 +80,29 @@ public:
     juce::AudioParameterFloat* phaserDepthPercent = nullptr;
     juce::AudioParameterFloat* phaserFeedbackPercent = nullptr;
     juce::AudioParameterFloat* phaserMixPercent = nullptr;
+    juce::AudioParameterBool* phaserBypassBool = nullptr;
     
     juce::AudioParameterFloat* chorusRateHz = nullptr;
     juce::AudioParameterFloat* chorusCenterDelayMs = nullptr;
     juce::AudioParameterFloat* chorusDepthPercent = nullptr;
     juce::AudioParameterFloat* chorusFeedbackPercent = nullptr;
     juce::AudioParameterFloat* chorusMixPercent = nullptr;
+    juce::AudioParameterBool* chorusBypassBool = nullptr;
     
     juce::AudioParameterFloat* overdriveSaturation = nullptr;
+    juce::AudioParameterBool* overdriveBypassBool = nullptr;
     
     juce::AudioParameterChoice* ladderFilterMode = nullptr;
     juce::AudioParameterFloat* ladderFilterCutoffHz = nullptr;
     juce::AudioParameterFloat* ladderFilterResonance = nullptr;
     juce::AudioParameterFloat* ladderFilterDrive = nullptr;
+    juce::AudioParameterBool* ladderFilterBypassBool = nullptr;
     
     juce::AudioParameterChoice* generalFilterMode = nullptr;
     juce::AudioParameterFloat* generalFilterFreqHz = nullptr;
     juce::AudioParameterFloat* generalFilterQuality = nullptr;
     juce::AudioParameterFloat* generalFilterGain = nullptr;
+    juce::AudioParameterBool* generalFilterBypassBool = nullptr;
     
 private:
     //==============================================================================
