@@ -138,14 +138,7 @@ Project13AudioProcessor::Project13AudioProcessor()
     };
     
     jassert ( floatParams.size() == floatNameFuncs.size());
-    
-    for (size_t i = 0; i < floatParams.size(); i++)
-    {
-        auto ptrToParamPtr = floatParams[i];
-        *ptrToParamPtr = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter(floatNameFuncs[i]()));
-        jassert (*ptrToParamPtr != nullptr);
-        
-    }
+    initCachedParams<juce::AudioParameterFloat*>(floatParams, floatNameFuncs);
     
     auto choiceParams = std::array
     {
@@ -162,13 +155,7 @@ Project13AudioProcessor::Project13AudioProcessor()
     };
     
     jassert ( choiceParams.size() == choiceNameFuncs.size());
-    
-    for (size_t i = 0; i < choiceParams.size(); i++)
-    {
-        auto ptrToParamPtr = choiceParams[i];
-        *ptrToParamPtr = dynamic_cast<juce::AudioParameterChoice*>(apvts.getParameter(choiceNameFuncs[i]()));
-        jassert(*ptrToParamPtr != nullptr);
-    }
+    initCachedParams<juce::AudioParameterChoice*>(choiceParams, choiceNameFuncs);
     
     auto boolParams = std::array
     {
@@ -197,14 +184,7 @@ Project13AudioProcessor::Project13AudioProcessor()
     };
     
     jassert ( boolParams.size() == boolNameFuncs.size());
-    
-    for (size_t i = 0; i < boolParams.size(); i++)
-    {
-        auto ptrToParamPtr = boolParams[i];
-        *ptrToParamPtr = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter(boolNameFuncs[i]()));
-        jassert(*ptrToParamPtr != nullptr);
-    }
-    
+    initCachedParams<juce::AudioParameterBool*>(boolParams, boolNameFuncs);
 }
 
 Project13AudioProcessor::~Project13AudioProcessor()
